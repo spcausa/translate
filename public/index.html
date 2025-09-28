@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>English → Translate</title>
+</head>
+<body>
+  <h1>Translate English Text</h1>
+  <form id="translateForm">
+    <textarea id="textInput" placeholder="Enter English text" rows="4" cols="50"></textarea><br />
+    <select id="targetLang">
+      <option value="hin_Deva">Hindi</option>
+      <option value="ory_Orya">Odia</option>
+      <!-- MODEL_MAP helps to add more language support here -->
+    </select><br />
+    <button type="submit">Translate</button>
+  </form>
+
+  <h2>Output</h2>
+  <pre id="output"></pre>
+
+  <script>
+    document.getElementById("translateForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const text = document.getElementById("textInput").value;
+      const lang = document.getElementById("targetLang").value;
+
+      const res = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, lang }),
+      });
+
+      const data = await res.json();
+      if (data.translation) {
+        document.getElementById("output").innerText = data.translation;
+      } else {
+        document.getElementById("output").innerText = "Error: " + (data.error || "unknown");
+      }
+    });
+  </script>
+</body>
+</html>
